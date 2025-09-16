@@ -1,0 +1,13 @@
+Saved/
+Binaries/
+.vscode/
+*.suo
+*.obj
+*.exe
+*.dll
+*.log
+*.tlog
+
+Intermediate/
+
+DerivedDataCache/

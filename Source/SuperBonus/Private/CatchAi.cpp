@@ -1,0 +1,49 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "Public/CatchAi.h"
+#include "Components/BoxComponent.h"
+#include "GameFramework/FloatingPawnMovement.h"
+
+// Sets default values
+ACatchAi::ACatchAi()
+{
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
+	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+	RootComponent = StaticMesh;
+	
+	BoxCollision = CreateDefaultSubobject<UBoxComponent>("BoxCollision");
+	BoxCollision->SetupAttachment(StaticMesh);
+
+	MovementComponent = CreateDefaultSubobject<UPawnMovementComponent, UFloatingPawnMovement>(TEXT("MovementComponent"));
+	MovementComponent->UpdatedComponent = StaticMesh;
+
+}
+
+// Called when the game starts or when spawned
+void ACatchAi::BeginPlay()
+{
+	Super::BeginPlay();
+	
+}
+
+FVector ACatchAi::Seek(FVector TargetLocation)
+{
+	FVector DesiredLocation = TargetLocation - GetActorLocation();
+	DesiredLocation.Normalize();
+	DesiredLocation*= MovementComponent->GetMaxSpeed();
+
+	FVector Steering = DesiredLocation - MovementComponent->Velocity;
+	Steering = Steering.GetClampedToMaxSize(MovementComponent->GetMaxSpeed());
+	return Steering;
+}
+
+// Called every frame
+void ACatchAi::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	MovementComponent->AddInputVector(Seek(FVector(0, 0, 0)));
+}
+
