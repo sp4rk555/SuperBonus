@@ -10,15 +10,15 @@ ACatchAi::ACatchAi()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	RootComponent = StaticMesh;
 	
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>("BoxCollision");
-	BoxCollision->SetupAttachment(StaticMesh);
+	RootComponent = BoxCollision;
 
 	MovementComponent = CreateDefaultSubobject<UPawnMovementComponent, UFloatingPawnMovement>(TEXT("MovementComponent"));
-	MovementComponent->UpdatedComponent = StaticMesh;
+	MovementComponent->UpdatedComponent = BoxCollision;
+	
+	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+	StaticMesh->SetupAttachment(RootComponent);
 
 }
 
@@ -44,6 +44,6 @@ FVector ACatchAi::Seek(FVector TargetLocation)
 void ACatchAi::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	MovementComponent->AddInputVector(Seek(FVector(0, 0, 0)));
+	//MovementComponent->AddInputVector(Seek(FVector(0, 0, 0)));
 }
 

@@ -11,15 +11,14 @@ AThrowAi::AThrowAi()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	RootComponent = StaticMesh;
-	// Create BoxComponent and set as RootComponent for the Actor
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>("BoxCollision");
-	BoxCollision->SetupAttachment(StaticMesh);
+	RootComponent = BoxCollision;
 
 	MovementComponent = CreateDefaultSubobject<UPawnMovementComponent, UFloatingPawnMovement>(TEXT("MovementComponent"));
-	
-	MovementComponent->UpdatedComponent = StaticMesh;
+	MovementComponent->UpdatedComponent = BoxCollision;
+
+	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+	StaticMesh->SetupAttachment(RootComponent);
 
 	
 }
@@ -28,7 +27,7 @@ AThrowAi::AThrowAi()
 void AThrowAi::BeginPlay()
 {
 	Super::BeginPlay();
-	PreviousVector = FVector(510.0f, 0.0f, 30.0f);
+	PreviousVector = FVector(-20.0f, 0.0f, 390.0f);
 }
 
 FVector AThrowAi::Seek(FVector TargetLocation)
@@ -46,10 +45,11 @@ FVector AThrowAi::Seek(FVector TargetLocation)
 void AThrowAi::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	FVector RandomVector = FVector(510.0f, FMath::RandRange(-800.0f,800.0f) , 30.0f);
+	FVector RandomVector = FVector(-20.0f, FMath::RandRange(-600.0f,600.0f) , 390.0f);
 	if (PreviousVector.Dist(PreviousVector, GetActorLocation()) < 10.0f)
 	{
 		Throw();
+		
 		MovementComponent->AddInputVector(Seek(FVector((RandomVector))));
 		PreviousVector = RandomVector;
 	}
@@ -64,15 +64,14 @@ void AThrowAi::Throw()
 	{
 
 		// Get the camera transform.
-		FVector ActorLocation = GetActorLocation();
-		FRotator ActorRotation = FRotator(0, 0, 0);
+		FVector ActorLocation = FVector(GetActorLocation().X , GetActorLocation().Y, GetActorLocation().Z - 30.0f);
+		FRotator ActorRotation = FRotator(0.0f, -90.0f, 0.0f);
 		;
 	 
-		// Set MuzzleOffset to spawn projectiles slightly in front of the camera.
-		//MuzzleOffset.Set(100.0f, 0.0f, 0.0f);
+		//MuzzleOffset.Set(0.0f, 10.0f, 0.0f);
 	 
 		// Transform MuzzleOffset from camera space to world space.
-		FVector MuzzleLocation = ActorLocation;
+		FVector MuzzleLocation = ActorLocation; // + FTransform(ActorRotation).TransformVector(MuzzleOffset);;
 	        
 		// Skew the aim to be slightly upwards.
 		FRotator MuzzleRotation = ActorRotation;
@@ -92,8 +91,6 @@ void AThrowAi::Throw()
 				FVector LaunchDirection = MuzzleRotation.Vector();
 				
 				Projectile->GoToDirection((LaunchDirection));
-				if (GEngine)
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("1")));
 			}
 		}
 	}
