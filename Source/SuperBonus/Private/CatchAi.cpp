@@ -2,8 +2,11 @@
 
 
 #include "Public/CatchAi.h"
+
+#include "Bonus.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ACatchAi::ACatchAi()
@@ -26,7 +29,13 @@ ACatchAi::ACatchAi()
 void ACatchAi::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABonus::StaticClass(), FoundActors);
+	if (FoundActors.Num() > 0)
+	{
+		NextBonus = FoundActors[0];
+	}
 }
 
 FVector ACatchAi::Seek(FVector TargetLocation)
@@ -44,6 +53,21 @@ FVector ACatchAi::Seek(FVector TargetLocation)
 void ACatchAi::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//MovementComponent->AddInputVector(Seek(FVector(0, 0, 0)));
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABonus::StaticClass(), FoundActors);
+	if (FoundActors.Num() > 0)
+	{
+		NextBonus = FoundActors[0];
+	}
+	if (NextBonus)
+	{
+		MovementComponent->AddInputVector(Seek(FVector(GetActorLocation().X,NextBonus->GetActorLocation().Y,GetActorLocation().Z)));
+	}
 }
+
+void ACatchAi::AddScore()
+{
+	Score ++;
+}
+
 

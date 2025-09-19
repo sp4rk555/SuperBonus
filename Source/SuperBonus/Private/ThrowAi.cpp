@@ -48,10 +48,10 @@ void AThrowAi::Tick(float DeltaTime)
 	FVector RandomVector = FVector(-20.0f, FMath::RandRange(-600.0f,600.0f) , 390.0f);
 	if (PreviousVector.Dist(PreviousVector, GetActorLocation()) < 10.0f)
 	{
-		Throw();
-		
+
 		MovementComponent->AddInputVector(Seek(FVector((RandomVector))));
 		PreviousVector = RandomVector;
+		Throw();
 	}
 	MovementComponent->AddInputVector(Seek(FVector((PreviousVector))));
 }
@@ -94,4 +94,9 @@ void AThrowAi::Throw()
 			}
 		}
 	}
+}
+
+void AThrowAi::AddNumberOfBonusThrowAndDestroyed()
+{
+	numberOfBonusThrowAndDestroyed ++;
 }

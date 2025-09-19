@@ -31,8 +31,15 @@ protected:
 	
 	FVector Seek(FVector TargetLocation);
 
+	AActor* NextBonus;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	float Score = 0;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void AddScore();
 
 };

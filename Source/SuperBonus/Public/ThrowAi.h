@@ -37,12 +37,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Bonus)
 	TSubclassOf<class ABonus> Bonus;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	float numberOfBonusThrowAndDestroyed = 0;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
 	void Throw();
+
+	void AddNumberOfBonusThrowAndDestroyed();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Bonus)
 	FVector MuzzleOffset;
