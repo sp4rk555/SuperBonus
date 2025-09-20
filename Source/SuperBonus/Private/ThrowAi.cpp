@@ -62,18 +62,14 @@ void AThrowAi::Throw()
 	// Attempt to fire a projectile.
 	if (Bonus)
 	{
-
-		// Get the camera transform.
+		
 		FVector ActorLocation = FVector(GetActorLocation().X , GetActorLocation().Y, GetActorLocation().Z - 30.0f);
 		FRotator ActorRotation = FRotator(0.0f, -90.0f, 0.0f);
 		;
-	 
-		//MuzzleOffset.Set(0.0f, 10.0f, 0.0f);
-	 
-		// Transform MuzzleOffset from camera space to world space.
-		FVector MuzzleLocation = ActorLocation; // + FTransform(ActorRotation).TransformVector(MuzzleOffset);;
+		
+		FVector MuzzleLocation = ActorLocation; 
 	        
-		// Skew the aim to be slightly upwards.
+
 		FRotator MuzzleRotation = ActorRotation;
 	 
 		UWorld* World = GetWorld();

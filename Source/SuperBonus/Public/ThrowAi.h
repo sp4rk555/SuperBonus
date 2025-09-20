@@ -49,6 +49,4 @@ public:
 
 	void AddNumberOfBonusThrowAndDestroyed();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Bonus)
-	FVector MuzzleOffset;
 };
